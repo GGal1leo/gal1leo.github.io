@@ -3,7 +3,7 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: home
-title: Post History
+title: 127.0.0.1
 list_title: ''
 list2_title: ''
 
