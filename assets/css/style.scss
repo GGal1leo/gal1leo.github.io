@@ -1,8 +1,4 @@
 ---
 ---
 
-@import "{{ site.theme }}";
-
-header h1 { margin: 0 10px 0 0; }
-
-header h1:before {content: ""}
+@import 'jekyll-theme-hacker';
