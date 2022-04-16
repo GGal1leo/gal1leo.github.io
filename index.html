@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<img align="left" src="{{ site.baseurl }}assets/gal1leo.gif">
+	<img align="left" src="https://pbs.twimg.com/profile_images/788575098487791616/a2vnnidg_400x400.jpg">
             <div align="middle">
                 <h1>Posts</h1>
                 {% for post in site.posts limit:5 %}
@@ -13,9 +13,10 @@ layout: default
                         <time datetime="{{ post.date | date: "%Y-%m-%d" }}">({{ post.date | date_to_long_string }})</time>
                         </span>
                         </h4>
-                        <br><br><br>
                     </article>
                 {% endfor %}
+                <br><br><br>
+
             </div>
 
 
