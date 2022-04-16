@@ -16,7 +16,7 @@
 title: <a href = '/' style = "text-decoration:none;color:#b5e853;" >Gal1leo.sh</a>
 description: >- # this means to ignore newlines until "baseurl:"
   A Cybersecurity blog by shinris3n <br>
-   <a href = "/writeups" style="color:#047d10;">Writeups</a>  <a href = "/news">News</a>  <a href = "/resources">Resources</a> <br>
+   <a href = "/writeups" style="color:#047d10;">Writeups</a>  <a href = "/news" style="color:#047d10;">News</a>  <a href = "/resources"> style="color:#047d10;">Resources</a> <br>
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://inspiring-babka-3c3d51.netlify.app" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 0xGal1leo
