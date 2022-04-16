@@ -1,7 +1,7 @@
 ---
 layout: default
 title:  "Resources"
-author: shinris3n
+author: Gal1leo
 ---
 
 <h5><a href="{{site.url}}"> &lt;&lt; home </a></h5>
