@@ -11,6 +11,8 @@ categories: [travels]
 
 <h1>Some Guy's casino, Cleveland OH</h1>
 
-![Mango Mango](/assets/videos/Snapchat-2107743220.mp4)
-
+<!-- ![Mango Mango](/assets/videos/Snapchat-2107743220.mp4) -->
+<video muted autoplay controls>
+<source src="/assets/videos/Snapchat-2107743220.mp4" type="video/mp4">
+</video>
 Please don't gamble. It's bad. This is puro entertainment.
