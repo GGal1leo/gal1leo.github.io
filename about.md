@@ -3,8 +3,21 @@ layout: page
 title: About
 ---
 
-Hey there you wonderful and sexy person.
-I'm a cyber security student, but the government wants you to believe I am a ✨*reformed* ✨black hat script kiddie.
+Hey there you wonderful and <span style="color:red">**sexy**</span> person.
+I'm a cyber security student, but the government wants you to believe I am a ✨<span style="color:gold">*reformed*</span>✨ black hat 🎩 ~~script kiddie~~.
 
 Btw, here's a real picture of me:
+
 ![](/assets/gal1leo.gif)
+
+I also absolutely fucking love participating in **CTFs** so please hit me up if you're looking for players.
+
+---
+><u>**TL;DR**</u>
+
+* **🎵 DJ and Music Producer** 
+* **💻 Infosec Enjoyer**
+* **✈️ Love Travelling**
+* **😆 A fucking awesome dude**
+
+---
