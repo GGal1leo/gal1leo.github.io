@@ -5,7 +5,7 @@ title: Writeups
 
 <section>
 
-  <h2 style="font-family: 'ohgodno';">./WRITEUPS</h2>
+  <h2 style="font-family: 'ohgodno';font-size: 300%;">./WRITEUPS</h2>
   <ul>
     {% for post in site.categories.writeups %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>

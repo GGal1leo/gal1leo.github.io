@@ -13,7 +13,7 @@ Btw, here's a real picture of me:
 I also absolutely fucking love participating in **CTFs** so please hit me up if you're looking for players.
 
 ---
-<u>**TL;DR**</u>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**TL;DR**
 
 * **🎵 DJ and Music Producer** 
 * **💻 Infosec Enjoyer**
