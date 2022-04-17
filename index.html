@@ -20,7 +20,48 @@ layout: default
                     {% endfor %}
     </div>
     <br><br><br><br><br><br><br>
+<!-- BANNER -->
+<p class="text" data-text="Amongus you sussy wussy baka"></p>
+    <script>
+       var printText = $('.text').data('text');
+    
+    var contentArray = printText.split('/n');
+    $.each(contentArray, function(index, newLine) {
+      $('.text').append('<span id="joebiden" style="display:block;" id="'+index+'"></span>');
+    
+      var lineID = index;
+      var self = $(this);
+        setTimeout(function () {
+          $.each(self, function(index, chunk){
+              setTimeout(function () {
+                $('#'+lineID).append("<span id='joebiden'>"+chunk+"</span>");
+                $('body, html').scrollTop($(document).height());
+              }, index*5);
+          });
+    
+        }, index*100);
+    }); 
+    </script>
+    <style>
+        #joebiden {
+  min-width: 5px;
+  display: inline-block;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 0.85em;
+  letter-spacing: 1.5px;
+  color: #FFF;
+}
 
+
+
+
+.text {
+  overflow: hidden;
+  height: auto;
+}
+
+    </style>
+<!-- BANNER END -->
     <div align="left">
     <hr>
     </div>
