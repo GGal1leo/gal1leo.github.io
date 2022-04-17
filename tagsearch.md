@@ -19,7 +19,7 @@ title: JOE
     {% endfor %}
 
     {% if postsInCategory.size > 0 %}
-        <h1>{{ tag[0] }}</h2>
+<h1>{{ tag[0] }}</h2>
         {% for post in postsInCategory %}
             <h2><a href="{{ site.baseurl }}{{ post.url }}"></a>{{ post.title }}</h2>
         {% endfor %}
