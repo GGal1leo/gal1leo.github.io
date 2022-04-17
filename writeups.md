@@ -1,16 +1,16 @@
 ---
 layout: page
-title: Archive
+title: Writeups
 ---
 
-<section>
-<!-- {% for tag in site.tags %} -->
-  <h2>WRITEUPS!</h2>
-  <ul>
-    {% for post in site.tags[0][1] %}
+<ul>
+{% for category in site.categories %}
+  <li><a name="{{ category | first }}">{{ category | first }}</a>
+    <ul>
+    {% for post in category.last %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
-  </ul>
-<!-- {% endfor %} -->
-<h4>site tags are : {{ site.tags }}</h4>
-</section>
+    </ul>
+  </li>
+{% endfor %}
+</ul>

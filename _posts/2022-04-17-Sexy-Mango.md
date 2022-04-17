@@ -1,7 +1,9 @@
 ---
 title: Sexy mango
 published: true
-tags: writeups
+tags: USA
+categories: writeup
+
 ---
 **I'M EATING MANGO BOBA TODAY AYAYAYAYAYAYAY**
 <br>~~Leaking some jlabs later~~
