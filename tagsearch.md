@@ -19,9 +19,9 @@ title: JOE
     {% endfor %}
 
     {% if postsInCategory.size > 0 %}
-<h1>{{ tag[0] }}</h2>
+<h2 style="font-family: 'ohgodno';font-size: 300%;">{{ tag[0] }}</h2>
         {% for post in postsInCategory %}
-            <h2><a href="{{ site.baseurl }}{{ post.url }}"></a>{{ post.title }}</h2>
+            <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
         {% endfor %}
     {% endif %}
 {% endfor %}
