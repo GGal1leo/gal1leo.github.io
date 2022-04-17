@@ -46,7 +46,7 @@
 /* original: https://github.com/pages-themes/hacker  */
 @font-face { font-family: "8Bit"; src: url("../assets/Pixeboy.tff"); }
 
-#8bit { font-family: "8Bit"; }
+#8bit { font-family: "8Bit" !important; }
 
 body { margin: 0; padding: 0; background: #151515 url("../assets/bkg.png") 0 0; color: #eaeaea; font-size: 16px; line-height: 1.5; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; }
 
