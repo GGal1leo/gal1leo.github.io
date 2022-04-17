@@ -133,6 +133,8 @@ a:active, a:focus { outline: 0; border: none; -moz-outline-style: none; }
 
 @font-face { font-family: "ohgodno"; src: url("https://gal1leo.tk/assets/Pixeboy.ttf"); }
 
+#8bit { font-family: ohgodno; }
+
 .header-link { padding: 3px; }
 
 .header-link:hover { color: black; background-color: red; }

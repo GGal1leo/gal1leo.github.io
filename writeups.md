@@ -5,7 +5,7 @@ title: Writeups
 
 <section>
 
-  <h2>WRITEUPS!</h2>
+  <h2 id="8bit">./WRITEUPS!</h2>
   <ul>
     {% for post in site.categories.writeups %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>
