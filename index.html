@@ -2,7 +2,7 @@
 layout: default
 ---
 <div align="middle">
-	<img align="left" src="https://pbs.twimg.com/profile_images/788575098487791616/a2vnnidg_400x400.jpg" height=200px width=200px>
+	<img style="display:inline;" align="left" src="https://pbs.twimg.com/profile_images/788575098487791616/a2vnnidg_400x400.jpg" height=200px width=200px>
 
                 <h1>Posts</h1>
                 {% for post in site.posts limit:5 %}
@@ -20,7 +20,7 @@ layout: default
 <div align="left">
 <hr>
 </div>
-<hr>
+
 <ul>
     {% for post in paginator.posts %}
       <li>
