@@ -4,12 +4,12 @@ title: Archive
 ---
 
 <section>
-{% for tag in site.tags %}
-  <h3>{{ tag[0] }}</h3>
+<!-- {% for tag in site.tags %} -->
+  <h3>{{ "writeups" }}</h3>
   <ul>
-    {% for post in tag[1] %}
+    {% for post in "writeups" %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
   </ul>
-{% endfor %}
+<!-- {% endfor %} -->
 </section>
