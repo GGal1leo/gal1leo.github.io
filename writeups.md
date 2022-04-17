@@ -9,7 +9,7 @@ title: Writeups
   {% for tag in site.tags %}
   <h3 style="font-family: 'ohgodno';font-size: 300%;">./{{ tag }}</h3>
   <ul>
-    {% for post in site.categories.writeups %}
+    {% for post in tag[1] %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
   </ul>
