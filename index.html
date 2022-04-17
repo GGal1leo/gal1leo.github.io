@@ -2,28 +2,12 @@
 layout: default
 ---
 
-<div id="search-container">
-    <input type="text" id="search-input" placeholder="search...">
-    <ul id="results-container"></ul>
-    </div>
-    
-    <!-- Script pointing to search-script.js -->
-    <script src="{{ site.baseurl }}search-script.js" type="text/javascript"></script>
-    
-    <!-- Configuration -->
-    <script>
-    SimpleJekyllSearch({
-      searchInput: document.getElementById('search-input'),
-      resultsContainer: document.getElementById('results-container'),
-      json: '{{ site.baseurl }}search.json'
-    })
-</script>
-
 <body>
     <div align="middle">
-        <img align="left" src="{{ site.baseurl }}assets/skull.gif" height=200px width=200px>
+        <img align="left" src="{{ site.baseurl }}assets/skull.gif" height=250px width=250px>
 
                     <h1 style="font-family: 'ohgodno';font-size: 300%;">Posts</h1>
+                    
                     {% for post in site.posts limit:5 %}
                         <article>
                             <h4>
