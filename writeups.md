@@ -1,7 +1,13 @@
 ---
 layout: page
 title: Writeups
+k: []
 ---
+{% for post in site.categories.writeups %}
+  {% assign tweetsAndPosts = post.tags | concat: k %}
+{% endfor %}
+
+k[0]
 
 <section>
 
