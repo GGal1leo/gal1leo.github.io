@@ -1,6 +1,7 @@
 ---
 title: Sexy mango
 published: true
+tags: writeups
 ---
 **I'M EATING MANGO BOBA TODAY AYAYAYAYAYAYAY**
 <br>~~Leaking some jlabs later~~
