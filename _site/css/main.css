@@ -44,6 +44,10 @@
 .highlight .ss { color: #90a959; }
 
 /* original: https://github.com/pages-themes/hacker  */
+@font-face { font-family: "8Bit"; src: url("../assets/Pixeboy.tff"); }
+
+#8bit { font-family: "8Bit"; }
+
 body { margin: 0; padding: 0; background: #151515 url("../assets/bkg.png") 0 0; color: #eaeaea; font-size: 16px; line-height: 1.5; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; }
 
 /* General & 'Reset' Stuff */
@@ -115,7 +119,7 @@ hr { height: 0; border: 0; border-bottom: 1px dashed #b5e853; color: #b5e853; }
 .btn-github .icon { opacity: 0.6; background: url("../images/blacktocat.png") 0 0 no-repeat; }
 
 /* Links a, a:hover, a:visited */
-a { color: #63c0f5; text-shadow: 0 0 5px rgba(104, 182, 255, 0.5); }
+a { color: #10bf0d; text-shadow: 0 0 5px rgba(104, 182, 255, 0.5); }
 
 a:active, a:focus { outline: 0; border: none; -moz-outline-style: none; }
 
