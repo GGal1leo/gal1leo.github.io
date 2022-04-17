@@ -8,7 +8,7 @@ I'm a cyber security student, but the government wants you to believe I am a ✨
 
 Btw, here's a real picture of me:
 
-![](/assets/gal1leo.gif) ![](https://media1.giphy.com/media/3jcgPn9fzfaXc1EHJC/giphy.gif) ![](https://static.wikia.nocookie.net/fandomium/images/b/bc/Obama_sphere.gif)
+![](/assets/gal1leo.gif) ![](https://static.wikia.nocookie.net/fandomium/images/b/bc/Obama_sphere.gif) ![](https://media1.giphy.com/media/3jcgPn9fzfaXc1EHJC/giphy.gif)
 
 I also absolutely fucking love participating in **CTFs** so please hit me up if you're looking for players.
 
