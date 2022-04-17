@@ -11,14 +11,7 @@ $header: $conifer !default;
 $blockquote-color: $silver-chalice !default;
 $blockquote-border: $dove-grey !default;
 
-@font-face {
-  font-family: "8Bit";
-  src: url("../assets/Pixeboy.tff");
-}
-#8bit
-{
-  font-family:  "8Bit" !important;
-}
+
 body {
   margin: 0;
   padding: 0;
