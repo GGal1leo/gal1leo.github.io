@@ -11,6 +11,7 @@ Ah reverse engineering. Everybody's favorite area. Today, I'll try a new *easy* 
 
 **0x41haz's [twitter](https://twitter.com/0x41haz)**
 
+---
 Alright so let's get started by downloading the file from tryhackme
 
 ```sh
