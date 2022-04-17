@@ -3,14 +3,14 @@ layout: page
 title: Writeups
 ---
 
-<ul>
-{% for category in site.categories %}
-  <li><a name="{{ category | first }}">{{ category | first }}</a>
-    <ul>
-    {% for post in category.last %}
+<section>
+
+  <h2>WRITEUPS!</h2>
+  <ul>
+    {% for post in site.categories.writeups %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
-    </ul>
-  </li>
-{% endfor %}
-</ul>
+  </ul>
+
+<!-- <h4>site tags are : {{ site.tags }}</h4> -->
+</section>
