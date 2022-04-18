@@ -5,7 +5,7 @@ categories: writeups
 tags: TryHackMe
 challenge: https://tryhackme.com/room/0x41haz
 ---
-**Challenge link** => [page.challenge](page.challenge)
+**Challenge link** => [{{ page.challenge }}]({{ page.challenge }})
 
 Today, I'll try a new *easy* challenge from **0x41haz**
 
