@@ -6,7 +6,7 @@ tags: TryHackME
 challenge: https://tryhackme.com/room/0x41haz
 ---
 **Challenge link** => [https://tryhackme.com/room/0x41haz](https://tryhackme.com/room/0x41haz)
-
+[{{ page.challenge }}]({{ page.challenge }})
 Ah reverse engineering. Everybody's favorite area. Today, I'll try a new *easy* challenge from **0x41haz**
 
 **0x41haz's [twitter](https://twitter.com/0x41haz)**
