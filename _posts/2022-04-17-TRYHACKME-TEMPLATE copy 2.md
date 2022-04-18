@@ -1,6 +1,6 @@
 ---
 title: Chronicle Writeup
-published: false
+published: true
 categories: writeups
 tags: TryHackMe
 challenge: https://tryhackme.com/room/chronicle
