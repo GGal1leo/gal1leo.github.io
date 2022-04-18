@@ -2,7 +2,7 @@
 title: 0x41haz writeup
 published: true
 categories: writeups
-tags: TryHackME
+tags: TryHackMe
 challenge: https://tryhackme.com/room/0x41haz
 ---
 **Challenge link** => [https://tryhackme.com/room/0x41haz](https://tryhackme.com/room/0x41haz)
