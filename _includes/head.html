@@ -3,9 +3,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <meta name="generator" content="Jekyll">
   {% if page.image %}
-    <meta content="/assets/images/OG-Images/{{ page.image }}">
+    <meta content="/assets/images/OG-Images/{{ page.image }}" property="og:image">
   {% else %}
-    <meta content="/assets/images/OG-Images/taco.png">
+    <meta content="/assets/images/OG-Images/taco.png" property="og:image">
   {% endif %}
   <title>{%if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 
