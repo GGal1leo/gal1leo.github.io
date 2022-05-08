@@ -25,14 +25,14 @@
 .image-gallery {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(200px, 1.5fr));
+    grid-template-columns: repeat(auto-fill,minmax(200px, 1fr));
     justify-content: center;
     padding: 4px;
   }
 
   .box {
       flex-basis: 25%;
-      width: 100%;
+      width: 250px;
       padding: 10px;
       margin: 2px;
   }
