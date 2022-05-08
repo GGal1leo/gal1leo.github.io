@@ -10,7 +10,7 @@ layout: default
                     {% for post in site.posts limit:5 %}
                         <article>
                             <h4>
-                            <a href="{{ post.url }}" style="font-family: 'Hind Siliguri', sans-serif;">{{ post.title }}</a>
+                            <a href="{{ post.url }}" style="font-family: 'Hind Siliguri', sans-serif; font-weight: bold;">{{ post.title }}</a>
                             <span>
                             <time datetime="{{ post.date | date: "%Y-%m-%d" }}">({{ post.date | date_to_long_string }})</time>
                             </span>
