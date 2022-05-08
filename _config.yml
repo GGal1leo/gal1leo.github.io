@@ -6,7 +6,7 @@ author:
   url: "https://gal1leo.tk/"
 
 baseurl: /
-include: "_redirects"
+include: _redirects
 source: .
 destination: ./_site
 permalink: /:categories/:title/
