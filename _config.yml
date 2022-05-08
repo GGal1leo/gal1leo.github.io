@@ -7,8 +7,6 @@ author:
 
 baseurl: /
 
-
-
 source: .
 destination: ./_site
 permalink: /:categories/:title/
