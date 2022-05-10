@@ -1,6 +1,6 @@
 ---
 title: GET MICHAEL'D
-published: true
+published: false
 categories: writeups
 tags: michael
 ---
