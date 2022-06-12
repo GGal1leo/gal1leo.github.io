@@ -22,6 +22,6 @@ I also absolutely fucking love participating in **CTFs** so please hit me up if 
 
 ---
 
-<script src="https://platform.linkedin.com/badges/js/profile.js" async defer ty>
-<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium">
+<script src="https://platform.linkedin.com/badges/js/profile.js" async defer ty></script>
+<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium"></div>
 
