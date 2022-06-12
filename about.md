@@ -21,3 +21,6 @@ I also absolutely fucking love participating in **CTFs** so please hit me up if 
 * **😆 A fucking awesome dude**
 
 ---
+
+<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="VERTICAL" data-vanity="daniel-v-b1031a212" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://ie.linkedin.com/in/daniel-v-b1031a212?trk=profile-badge">Daniel V.</a></div>
