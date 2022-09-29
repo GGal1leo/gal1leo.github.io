@@ -1,6 +1,6 @@
 ---
 title: GET ENDA'D
-published: false
+published: true
 categories: writeups
 tags: enda
 ---
