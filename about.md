@@ -12,6 +12,8 @@ Btw, here's a real picture of me:
 
 I also absolutely fucking love participating in **CTFs** so please hit me up if you're looking for players.
 
+<script src="https://www.hackthebox.eu/badge/256459"></script>
+
 ---
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**TL;DR**
 
