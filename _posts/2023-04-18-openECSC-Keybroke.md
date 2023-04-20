@@ -1,13 +1,17 @@
 ---
 title: Keybroke
-published: false
+published: true
 categories: writeups
 tags: openECSC
 ---
 
 ****This is part of Round 1 of the OPENECSC.NO****
 
+<center>
+
 ![Challenge](/assets/images/Keybroke_q.png)
+
+</center>
 
 ---
 After downloading the 2 files, we can see that the key.pem is partially redacted
@@ -74,6 +78,25 @@ Luckily for us, we can find some useful information in the asn.1 header
 Error in encoding
 140623807173952:error:0D07209B:asn1 encoding routines:ASN1_get_object:too long:../crypto/asn1/asn1_lib.c:91:
 ```
+<center>
+
+This is the information we're given:
+
+|                      	| offset 	| length 	|
+|----------------------	|--------	|--------	|
+| n (modulus)          	| 7      	| 257    	|
+| e (public exponent)  	| 268    	| 3      	|
+| d (private exponent) 	| 273    	| 256    	|
+| p (first prime)      	| 533    	| 129    	|
+| q (second prime)     	| 665    	| 129    	|
+| dp (first exponent)  	| 797    	| 128    	|
+| dq (second exponent) 	| 928    	| 129    	|
+
+</center>
+
+---
+
+Keeping in mind that `D34` is the redacted part:
 
 At offset `7` we have `n` which is `257` in length but most of it is redacted by 0s.
 
