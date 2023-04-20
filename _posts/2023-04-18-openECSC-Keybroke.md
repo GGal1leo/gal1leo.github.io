@@ -5,13 +5,15 @@ categories: writeups
 tags: openECSC
 ---
 
-****This is part of Round 1 of the OPENECSC.NO****
+**This is part of Round 1 of the OPENECSC.NO**
 
-<center>
+
+
 
 ![Challenge](/assets/images/Keybroke_q.png)
 
-</center>
+
+
 
 ---
 After downloading the 2 files, we can see that the key.pem is partially redacted
@@ -47,6 +49,7 @@ XWblN8hI5e9R1XYXaaVxwAWmxWvES+a652K40elaZRTEDWR30S4efPwd4KIFsVdc
 ```
 
 Luckily for us, we can find some useful information in the asn.1 header
+
 ```
     RSAPrivateKey ::= SEQUENCE {
       version   Version,
@@ -78,9 +81,10 @@ Luckily for us, we can find some useful information in the asn.1 header
 Error in encoding
 140623807173952:error:0D07209B:asn1 encoding routines:ASN1_get_object:too long:../crypto/asn1/asn1_lib.c:91:
 ```
-<center>
+
 
 This is the information we're given:
+
 
 |                      	| offset 	| length 	|
 |----------------------	|--------	|--------	|
@@ -92,7 +96,8 @@ This is the information we're given:
 | dp (first exponent)  	| 797    	| 128    	|
 | dq (second exponent) 	| 928    	| 129    	|
 
-</center>
+
+
 
 ---
 
