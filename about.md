@@ -10,7 +10,7 @@ Btw, here's a real picture of me:
 
 ![](/assets/gal1leo.gif) ![](https://static.wikia.nocookie.net/fandomium/images/b/bc/Obama_sphere.gif) ![](https://media1.giphy.com/media/3jcgPn9fzfaXc1EHJC/giphy.gif)
 
-I also absolutely fucking love participating in **CTFs** so please hit me up if you're looking for players.
+I also absolutely love participating in **CTFs** so please hit me up if you're looking for players.
 
 <script src="https://www.hackthebox.eu/badge/256459"></script>
 
@@ -20,7 +20,7 @@ I also absolutely fucking love participating in **CTFs** so please hit me up if 
 * **🎵 DJ and Music Producer** 
 * **💻 Infosec Enjoyer**
 * **✈️ Love Travelling**
-* **😆 A fucking awesome dude**
+* **😆 Full-time awesome person**
 
 ---
 
