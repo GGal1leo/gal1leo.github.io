@@ -18,7 +18,7 @@ I also absolutely love participating in **CTFs** so please hit me up if you're l
 <script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
 
 ---
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**TL;DR**
+**TL;DR**
 
 * **🎵 DJ and Music Producer** 
 * **💻 Infosec Enjoyer**
