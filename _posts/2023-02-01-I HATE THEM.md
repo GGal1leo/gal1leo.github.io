@@ -1,6 +1,6 @@
 ---
 title: I HATE THEM
-published: true
+published: false
 categories: writeups
 tags: N
 ---
