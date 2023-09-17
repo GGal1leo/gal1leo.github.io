@@ -14,6 +14,9 @@ I also absolutely love participating in **CTFs** so please hit me up if you're l
 
 <script src="https://www.hackthebox.eu/badge/256459"></script>
 
+<div class="github-card" data-github="GGal1leo" data-width="400" data-height="321" data-theme="medium"></div>
+<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+
 ---
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**TL;DR**
 
