@@ -1,8 +1,8 @@
 title: /home/Gal1leo
-description: "A Michael Gleeson Enjoyer"
+description: "CTF Writeups from a cybersecurity student"
 author:
   name: "Gal1leo"
-  email: "someone@somewebsite.somedomain"
+  email: "g4l1le0@protonmail.ch"
   url: "https://gal1leo.wtf/"
 
 baseurl: /
@@ -28,4 +28,4 @@ plugins:
 
 # Custom variables
 owner : "Gal1leo"
-year : "2022"
+year : "2023"
