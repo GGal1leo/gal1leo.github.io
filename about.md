@@ -27,6 +27,3 @@ I also absolutely love participating in **CTFs** so please hit me up if you're l
 
 ---
 
-<audio ref="audio" countrols="controls">
-   <source src="http://gal1leo.ddns.net:8000/stream?type=.mp3" type="audio/mpeg">      
-</audio>
